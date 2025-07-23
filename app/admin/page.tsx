@@ -2,9 +2,10 @@
 
 import type React from "react"
 import { useState } from "react"
-import { Shield, Eye, EyeOff, Mail, Lock } from "lucide-react"
+import { Shield, Eye, EyeOff, Mail, Lock, ArrowLeft } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { useFirebase } from "../hooks/use-firebase"
+import Link from "next/link"
 
 export default function AdminPage() {
   const [email, setEmail] = useState("")
@@ -31,33 +32,40 @@ export default function AdminPage() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 flex items-center justify-center py-16 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-lg w-full">
+    <div className="min-h-screen bg-slate-50 py-16">
+      <div className="max-w-2xl mx-auto px-4 sm:px-6">
+        {/* Back Button */}
+        <Link
+          href="/"
+          className="inline-flex items-center space-x-3 text-slate-600 hover:text-slate-800 mb-12 text-xl font-semibold"
+        >
+          <ArrowLeft className="h-6 w-6" />
+          <span>Back to Home</span>
+        </Link>
+
         {/* Page Header */}
-        <div className="text-center mb-12">
-          <div className="bg-slate-100 w-24 h-24 rounded-3xl flex items-center justify-center mx-auto mb-8">
-            <Shield className="h-12 w-12 text-slate-600" />
-          </div>
-          <h1 className="text-4xl font-bold text-slate-900 mb-4">Admin Access</h1>
-          <p className="text-xl text-slate-600">Access the fleet management dashboard</p>
+        <div className="text-center mb-16">
+          <Shield className="h-24 w-24 text-slate-600 mx-auto mb-8" />
+          <h1 className="text-4xl font-bold text-slate-900 mb-6">Admin Login</h1>
+          <p className="text-xl text-slate-600">Access the management dashboard</p>
         </div>
 
         {/* Login Form */}
-        <div className="bg-white rounded-3xl shadow-xl border border-slate-200 p-10">
-          <form onSubmit={handleSubmit} className="space-y-8">
+        <div className="bg-white rounded-3xl shadow-xl border border-slate-200 p-12">
+          <form onSubmit={handleSubmit} className="space-y-10">
             {error && (
-              <div className="bg-red-50 border border-red-200 rounded-2xl p-6">
-                <p className="text-red-700 font-semibold text-center">{error}</p>
+              <div className="bg-red-50 border-2 border-red-200 rounded-2xl p-6 text-center">
+                <p className="text-red-700 font-bold text-xl">{error}</p>
               </div>
             )}
 
             <div>
-              <label htmlFor="email" className="block text-lg font-bold text-slate-700 mb-4">
-                Email Address
+              <label htmlFor="email" className="block text-2xl font-bold text-slate-700 mb-6">
+                Email
               </label>
               <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none">
-                  <Mail className="h-6 w-6 text-slate-400" />
+                <div className="absolute inset-y-0 left-0 pl-6 flex items-center pointer-events-none">
+                  <Mail className="h-8 w-8 text-slate-400" />
                 </div>
                 <input
                   id="email"
@@ -65,19 +73,19 @@ export default function AdminPage() {
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="block w-full pl-14 pr-5 py-5 border border-slate-300 rounded-2xl focus:ring-2 focus:ring-slate-500 focus:border-slate-500 transition-colors bg-slate-50 text-lg"
+                  className="block w-full pl-16 pr-6 py-4 border-2 border-slate-300 rounded-xl focus:ring-4 focus:ring-slate-200 focus:border-slate-500 transition-colors bg-slate-50 text-lg"
                   placeholder="tomaspancetti@gmail.com"
                 />
               </div>
             </div>
 
             <div>
-              <label htmlFor="password" className="block text-lg font-bold text-slate-700 mb-4">
+              <label htmlFor="password" className="block text-2xl font-bold text-slate-700 mb-6">
                 Password
               </label>
               <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none">
-                  <Lock className="h-6 w-6 text-slate-400" />
+                <div className="absolute inset-y-0 left-0 pl-6 flex items-center pointer-events-none">
+                  <Lock className="h-8 w-8 text-slate-400" />
                 </div>
                 <input
                   id="password"
@@ -85,18 +93,18 @@ export default function AdminPage() {
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="block w-full pl-14 pr-14 py-5 border border-slate-300 rounded-2xl focus:ring-2 focus:ring-slate-500 focus:border-slate-500 transition-colors bg-slate-50 text-lg"
+                  className="block w-full pl-16 pr-16 py-4 border-2 border-slate-300 rounded-xl focus:ring-4 focus:ring-slate-200 focus:border-slate-500 transition-colors bg-slate-50 text-lg"
                   placeholder="Enter your password"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute inset-y-0 right-0 pr-5 flex items-center"
+                  className="absolute inset-y-0 right-0 pr-6 flex items-center"
                 >
                   {showPassword ? (
-                    <EyeOff className="h-6 w-6 text-slate-400 hover:text-slate-600" />
+                    <EyeOff className="h-8 w-8 text-slate-400 hover:text-slate-600" />
                   ) : (
-                    <Eye className="h-6 w-6 text-slate-400 hover:text-slate-600" />
+                    <Eye className="h-8 w-8 text-slate-400 hover:text-slate-600" />
                   )}
                 </button>
               </div>
@@ -105,19 +113,9 @@ export default function AdminPage() {
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full bg-slate-600 hover:bg-slate-700 disabled:bg-slate-400 text-white font-bold py-6 px-8 rounded-2xl transition-all duration-300 hover:scale-105 flex items-center justify-center space-x-4 shadow-lg text-xl"
+              className="w-full bg-slate-600 hover:bg-slate-700 disabled:bg-slate-400 text-white font-bold py-4 px-8 rounded-xl transition-all duration-300 hover:scale-105 shadow-lg text-xl"
             >
-              {isLoading ? (
-                <>
-                  <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-white"></div>
-                  <span>Authenticating...</span>
-                </>
-              ) : (
-                <>
-                  <Shield className="h-6 w-6" />
-                  <span>Access Dashboard</span>
-                </>
-              )}
+              {isLoading ? "LOGGING IN..." : "ACCESS DASHBOARD"}
             </button>
           </form>
         </div>

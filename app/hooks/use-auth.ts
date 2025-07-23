@@ -1,87 +1,59 @@
 "use client"
 
-import { useState, useEffect, createContext, useContext } from "react"
+import { useState, useEffect } from "react"
 
 interface Driver {
   id: string
   firstName: string
   lastName: string
   email: string
-  phone: string
-  licenseNumber: string
-  status: "pending" | "approved" | "rejected"
-  createdAt: string
-}
-
-interface AuthContextType {
-  driver: Driver | null
-  isLoading: boolean
-  login: (email: string, password: string) => Promise<boolean>
-  logout: () => void
-  isAuthenticated: boolean
-}
-
-const AuthContext = createContext<AuthContextType | undefined>(undefined)
-
-export function useAuth() {
-  const context = useContext(AuthContext)
-  if (context === undefined) {
-    throw new Error("useAuth must be used within an AuthProvider")
-  }
-  return context
 }
 
 export function useDriverAuth() {
   const [driver, setDriver] = useState<Driver | null>(null)
+  const [isAuthenticated, setIsAuthenticated] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
-    // Check if driver is logged in (from localStorage)
+    // Check if user is logged in from localStorage
     const savedDriver = localStorage.getItem("driver")
     if (savedDriver) {
-      setDriver(JSON.parse(savedDriver))
+      const driverData = JSON.parse(savedDriver)
+      setDriver(driverData)
+      setIsAuthenticated(true)
     }
     setIsLoading(false)
   }, [])
 
-  const login = async (email: string, password: string): Promise<boolean> => {
-    setIsLoading(true)
-    try {
-      // Simulate API call to authenticate driver
-      await new Promise((resolve) => setTimeout(resolve, 1000))
-
-      // Mock driver data - in real app, this would come from Firebase
+  const login = async (email: string, password: string) => {
+    // Mock login - in real app, this would call your authentication API
+    if (email && password) {
       const mockDriver: Driver = {
-        id: "driver_123",
-        firstName: "John",
-        lastName: "Doe",
+        id: "driver_" + Date.now(),
+        firstName: email.split("@")[0].split(".")[0] || "Driver",
+        lastName: email.split("@")[0].split(".")[1] || "User",
         email: email,
-        phone: "(555) 123-4567",
-        licenseNumber: "D123456789",
-        status: "approved",
-        createdAt: new Date().toISOString(),
       }
 
       setDriver(mockDriver)
+      setIsAuthenticated(true)
       localStorage.setItem("driver", JSON.stringify(mockDriver))
-      return true
-    } catch (error) {
-      return false
-    } finally {
-      setIsLoading(false)
+    } else {
+      throw new Error("Invalid credentials")
     }
   }
 
   const logout = () => {
     setDriver(null)
+    setIsAuthenticated(false)
     localStorage.removeItem("driver")
   }
 
   return {
     driver,
+    isAuthenticated,
     isLoading,
     login,
     logout,
-    isAuthenticated: !!driver,
   }
 }
